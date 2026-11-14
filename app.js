@@ -59,11 +59,28 @@ function ensureAudioGraph() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
+let currentVolume = 1;
+
 function setVolume(v) {
+  currentVolume = v;
   if (audioCtx && gainNode) {
     gainNode.gain.setTargetAtTime(v, audioCtx.currentTime, 0.02);
   } else {
     audio.volume = v;
+  }
+}
+
+function duckGain() {
+  if (audioCtx && gainNode && !audio.paused && !audio.ended) {
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.008);
+  }
+}
+
+function restoreGain() {
+  if (audioCtx && gainNode && !audio.paused && !audio.ended) {
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.03);
   }
 }
 
@@ -104,6 +121,8 @@ audio.addEventListener('ended', () => { audio.currentTime = 0; });
 audio.addEventListener('loadedmetadata', () => {
   durationEl.textContent = formatTime(audio.duration);
 });
+audio.addEventListener('seeking', duckGain);
+audio.addEventListener('seeked', restoreGain);
 
 let seekDragging = false;
 seekEl.addEventListener('pointerdown', () => { seekDragging = true; });
