@@ -47,7 +47,7 @@ python3 -m http.server 8000
 - Lautstärke-Slider (gewählte Lautstärke wird lokal gespeichert; läuft über einen GainNode der Web Audio API, damit er auch auf iOS funktioniert, wo `audio.volume` ignoriert wird)
 - Fortschrittsbalken mit Sprungfunktion und Zeitanzeige (Gain-Ducking unterdrückt das Knacken beim Springen)
 - Animierte Wellenform während der Wiedergabe (Web Audio API, `AnalyserNode`)
-- Quadratisches Cover, mobil optimiert (Safe-Area, große Touch-Flächen, funktioniert ab ~320 px Breite)
+- Quadratisches Cover, mobil optimiert (Safe-Area oben/unten, große Touch-Flächen, funktioniert ab ~320 px Breite; zentriert per `margin: auto`, damit bei wenig Viewport-Höhe nichts oben abgeschnitten wird)
 
 ## Hinweise
 
