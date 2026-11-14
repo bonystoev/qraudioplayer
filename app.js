@@ -157,7 +157,10 @@ audio.addEventListener('timeupdate', () => {
 });
 
 let storedVolume = NaN;
-try { storedVolume = Number(localStorage.getItem('audioplayer-volume')); } catch (e) { /* ignore */ }
+try {
+  const rawVolume = localStorage.getItem('audioplayer-volume');
+  if (rawVolume !== null) storedVolume = Number(rawVolume);
+} catch (e) { /* ignore */ }
 if (Number.isFinite(storedVolume) && storedVolume >= 0 && storedVolume <= 1) {
   volumeEl.value = String(storedVolume);
 }
