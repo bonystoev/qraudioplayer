@@ -21,6 +21,7 @@ const CONFIG = {
   coverSrc: 'assets/cover.jpg',
   title: 'Titel des Werks',
   artist: 'Name der Künstlerin / des Künstlers',
+  credits: ['Zeile 1', 'Zeile 2', 'Zeile 3'], // leer lassen: []
 };
 ```
 
@@ -48,6 +49,7 @@ python3 -m http.server 8000
 - Fortschrittsbalken mit Sprungfunktion und Zeitanzeige (Gain-Ducking unterdrückt das Knacken beim Springen)
 - Animierte Wellenform während der Wiedergabe (Web Audio API, `AnalyserNode`)
 - Quadratisches Cover, mobil optimiert (Safe-Area oben/unten, große Touch-Flächen, funktioniert ab ~320 px Breite; zentriert per `margin: auto`, damit bei wenig Viewport-Höhe nichts oben abgeschnitten wird)
+- Optionaler Credits-Block unten in der Karte (eine Zeile pro Eintrag in `CONFIG.credits`; leeres Array versteckt den Block)
 
 ## Hinweise
 

@@ -174,3 +174,11 @@ input[type="range"]:focus-visible {
   }
   .waveform { height: 48px; }
 }
+
+.credits {
+  margin-top: 18px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.credits:empty { display: none; }

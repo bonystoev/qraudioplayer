@@ -3,6 +3,11 @@ const CONFIG = {
   coverSrc: 'assets/cover.svg',
   title: 'Titel des Werks',
   artist: 'Name der Künstlerin / des Künstlers',
+  credits: [
+    'Kurator:in: …',
+    'Grafik & Sound: …',
+    'Eine Ausstellung von …',
+  ],
 };
 
 const ICON_PLAY = '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
@@ -22,11 +27,19 @@ const currentEl = document.getElementById('current');
 const durationEl = document.getElementById('duration');
 const waveCanvas = document.getElementById('waveform');
 const waveCtx = waveCanvas.getContext('2d');
+const creditsEl = document.getElementById('credits');
 
 coverEl.src = CONFIG.coverSrc;
 titleEl.textContent = CONFIG.title;
 artistEl.textContent = CONFIG.artist;
 document.title = CONFIG.title + ' – Audioguide';
+if (Array.isArray(CONFIG.credits)) {
+  for (const line of CONFIG.credits) {
+    const lineEl = document.createElement('div');
+    lineEl.textContent = line;
+    creditsEl.appendChild(lineEl);
+  }
+}
 
 let audioCtx = null;
 let analyser = null;
