@@ -30,22 +30,41 @@ document.title = CONFIG.title + ' – Audioguide';
 
 let audioCtx = null;
 let analyser = null;
+let gainNode = null;
 let timeData = null;
 
 function ensureAudioGraph() {
   if (!audioCtx) {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
-    audioCtx = new Ctx();
-    const source = audioCtx.createMediaElementSource(audio);
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 2048;
-    analyser.smoothingTimeConstant = 0.8;
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    timeData = new Uint8Array(analyser.fftSize);
+    try {
+      audioCtx = new Ctx();
+      const source = audioCtx.createMediaElementSource(audio);
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = Number(volumeEl.value);
+      audio.volume = 1;
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.8;
+      source.connect(gainNode);
+      gainNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      timeData = new Uint8Array(analyser.fftSize);
+    } catch (e) {
+      audioCtx = null;
+      gainNode = null;
+      return;
+    }
   }
   if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function setVolume(v) {
+  if (audioCtx && gainNode) {
+    gainNode.gain.setTargetAtTime(v, audioCtx.currentTime, 0.02);
+  } else {
+    audio.volume = v;
+  }
 }
 
 function setPlayingUI(playing) {
@@ -105,15 +124,18 @@ audio.addEventListener('timeupdate', () => {
   }
 });
 
-const storedVolume = Number(localStorage.getItem('audioplayer-volume'));
+let storedVolume = NaN;
+try { storedVolume = Number(localStorage.getItem('audioplayer-volume')); } catch (e) { /* ignore */ }
 if (Number.isFinite(storedVolume) && storedVolume >= 0 && storedVolume <= 1) {
   volumeEl.value = String(storedVolume);
 }
-audio.volume = Number(volumeEl.value);
-setFill(volumeEl, audio.volume);
+setVolume(Number(volumeEl.value));
+setFill(volumeEl, Number(volumeEl.value));
+volumeEl.addEventListener('pointerdown', () => ensureAudioGraph());
 volumeEl.addEventListener('input', () => {
+  ensureAudioGraph();
   const v = Number(volumeEl.value);
-  audio.volume = v;
+  setVolume(v);
   setFill(volumeEl, v);
   try { localStorage.setItem('audioplayer-volume', String(v)); } catch (e) { /* ignore */ }
 });
