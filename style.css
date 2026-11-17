@@ -161,6 +161,28 @@ input[type="range"]::-moz-range-thumb {
   background: var(--text);
 }
 
+/* Lautstärke-Slider dezenter: dünne graue Spur, kleiner Griff, gedimmtes Icon */
+#volume::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--muted) 0%, var(--muted) var(--fill, 0%), var(--track) var(--fill, 0%));
+}
+#volume::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  background: var(--muted);
+}
+#volume::-moz-range-track { height: 4px; }
+#volume::-moz-range-progress { height: 4px; background: var(--muted); }
+#volume::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.volume svg { opacity: 0.55; }
+
 .btn:focus-visible,
 input[type="range"]:focus-visible {
   outline: 2px solid var(--accent);

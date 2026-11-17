@@ -45,7 +45,7 @@ python3 -m http.server 8000
 ## Funktionen
 
 - Play/Pause-Button (Icon wechselt), Stop-Button (Pause + zurück auf 0:00)
-- Lautstärke-Slider startet beim Erstbesuch in der Mitte (50 %), die gewählte Lautstärke wird lokal gespeichert; läuft über einen GainNode der Web Audio API, damit er auch auf iOS funktioniert, wo `audio.volume` ignoriert wird
+- Lautstärke-Slider startet beim Erstbesuch voll (100 %), die gewählte Lautstärke wird lokal gespeichert; dezentes Design (dünne graue Spur, kleiner Griff, gedimmtes Icon); läuft über einen GainNode der Web Audio API, damit er auch auf iOS funktioniert, wo `audio.volume` ignoriert wird
 - Fortschrittsbalken mit Sprungfunktion und Zeitanzeige (Gain-Ducking unterdrückt das Knacken beim Springen)
 - Animierte Wellenform während der Wiedergabe (Web Audio API, `AnalyserNode`)
 - Quadratisches Cover, mobil optimiert (Safe-Area oben/unten, große Touch-Flächen, funktioniert ab ~320 px Breite; zentriert per `margin: auto`, damit bei wenig Viewport-Höhe nichts oben abgeschnitten wird)
