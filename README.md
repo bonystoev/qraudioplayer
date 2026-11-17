@@ -51,6 +51,17 @@ python3 -m http.server 8000
 - Quadratisches Cover, mobil optimiert (Safe-Area oben/unten, große Touch-Flächen, funktioniert ab ~320 px Breite; zentriert per `margin: auto`, damit bei wenig Viewport-Höhe nichts oben abgeschnitten wird)
 - Optionaler Credits-Block unten in der Karte (eine Zeile pro Eintrag in `CONFIG.credits`; leeres Array versteckt den Block)
 
+## Klick-Analyse (Play-Button)
+
+Der Player meldet Klicks per `navigator.sendBeacon` (POST) an `analytics.php` im selben Ordner wie die Seite. Dort landen die Events in `analytics-logs/events.csv`.
+
+- Events: `play_click` (jeder Klick auf Play/Pause, mit `action=play|pause`) und `play_started` (tatsächlicher Wiedergabestart)
+- Auswertung im Browser öffnen: `analytics.php?stats=1` (gesamt, pro Event, pro Tag)
+- `analytics-logs/` muss für den Webserver beschreibbar sein (z. B. `chmod 777 analytics-logs`); wird sonst selbst angelegt, wenn möglich
+- Abschaltbar in `app.js` (`CONFIG.analyticsEndpoint: ''`); schlägt das Endpoint fehl, passiert still nichts — der Player funktioniert trotzdem
+- Anonym: keine Cookies, keine IP, keine personenbezogenen Daten — nur Zeitstempel, Event, Aktion, Seitenpfad
+- Optional in `analytics.php` oben `$STATS_KEY` setzen und die Statistik nur mit `analytics.php?stats=1&key=...` abrufen
+
 ## Hinweise
 
 - Auf iOS startet der Ton erst nach dem ersten Tippen (Play-Button) – das ist ein Browser-Schutz und wird automatisch gehandhabt.

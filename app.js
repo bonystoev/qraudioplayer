@@ -3,6 +3,7 @@ const CONFIG = {
   coverSrc: 'assets/cover.svg',
   title: 'Titel des Werks',
   artist: 'Name der Künstlerin / des Künstlers',
+  analyticsEndpoint: 'analytics.php',
   credits: [
     'Kurator:in: …',
     'Grafik & Sound: …',
@@ -114,8 +115,33 @@ function setFill(el, ratio) {
   el.style.setProperty('--fill', Math.round(ratio * 100) + '%');
 }
 
+function trackEvent(name, extra) {
+  const endpoint = CONFIG.analyticsEndpoint;
+  if (!endpoint) return;
+  try {
+    const params = new URLSearchParams();
+    params.set('event', name);
+    params.set('t', new Date().toISOString());
+    params.set('page', location.pathname);
+    if (extra) {
+      for (const key of Object.keys(extra)) params.set(key, extra[key]);
+    }
+    const body = params.toString();
+    if (navigator.sendBeacon && navigator.sendBeacon(endpoint, new Blob([body], { type: 'application/x-www-form-urlencoded' }))) {
+      return;
+    }
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+      keepalive: true,
+    }).catch(() => {});
+  } catch (e) { /* Analytics darf den Player nie blockieren */ }
+}
+
 playBtn.addEventListener('click', () => {
   ensureAudioGraph();
+  trackEvent('play_click', { action: audio.paused ? 'play' : 'pause' });
   if (audio.paused) {
     audio.play().catch(() => {});
   } else {
@@ -128,7 +154,10 @@ stopBtn.addEventListener('click', () => {
   audio.currentTime = 0;
 });
 
-audio.addEventListener('play', () => setPlayingUI(true));
+audio.addEventListener('play', () => {
+  setPlayingUI(true);
+  trackEvent('play_started');
+});
 audio.addEventListener('pause', () => setPlayingUI(false));
 audio.addEventListener('ended', () => { audio.currentTime = 0; });
 audio.addEventListener('loadedmetadata', () => {
