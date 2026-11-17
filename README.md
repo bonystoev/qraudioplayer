@@ -68,6 +68,8 @@ Der Player meldet Klicks per `navigator.sendBeacon` (POST) an `analytics.php` im
 - Einmal Play drücken, danach `analytics.php?stats=1` neu laden
 - `analytics-logs/` neben `analytics.php` muss beschreibbar sein (`chmod 777 analytics-logs`); sonst antwortet das Endpoint mit **500** (sichtbar im Network-Tab der Browser-DevTools)
 - Im Network-Tab prüfen, ob der POST auf `analytics.php` mit **204** durchgeht
+- `analytics.php?debug=1` zeigt, ob `analytics-logs/` beschreibbar ist, wie viele Zeilen die CSV hat und die letzten 5 Einträge
+- Die Statistik wird mit `Cache-Control: no-store` ausgeliefert — wenn die Seite im Browser alt wirkt: hart neu laden oder Cache-Buster anhängen (`?stats=1&v=2`)
 
 ## Hinweise
 

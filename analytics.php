@@ -57,6 +57,8 @@ if (isset($_GET['stats'])) {
         http_response_code(403);
         exit('forbidden');
     }
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
     header('Content-Type: text/html; charset=utf-8');
     echo '<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<title>Play-Statistik</title>';
@@ -114,5 +116,22 @@ if (isset($_GET['stats'])) {
     exit;
 }
 
+if (isset($_GET['debug'])) {
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'logDir: ' . $logDir . "\n";
+    echo 'is_dir: ' . (is_dir($logDir) ? 'yes' : 'no') . "\n";
+    echo 'is_writable(dir): ' . (is_dir($logDir) && is_writable($logDir) ? 'yes' : 'no') . "\n";
+    echo 'logFile: ' . $logFile . "\n";
+    echo 'logFile exists: ' . (is_file($logFile) ? 'yes' : 'no') . "\n";
+    if (is_file($logFile)) {
+        echo 'is_writable(file): ' . (is_writable($logFile) ? 'yes' : 'no') . "\n";
+        $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        echo 'rows: ' . count($lines) . "\n";
+        echo "last 5 rows:\n" . implode("\n", array_slice($lines, -5)) . "\n";
+    }
+    exit;
+}
+
 http_response_code(405);
-echo 'POST events, oder GET ?stats=1';
+echo 'POST events, oder GET ?stats=1 (Debug: ?debug=1)';
