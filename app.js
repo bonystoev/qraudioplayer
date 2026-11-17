@@ -116,7 +116,7 @@ function setFill(el, ratio) {
 }
 
 function trackEvent(name, extra) {
-  const endpoint = CONFIG.analyticsEndpoint;
+  const endpoint = CONFIG.analyticsEndpoint === undefined ? 'analytics.php' : CONFIG.analyticsEndpoint;
   if (!endpoint) return;
   try {
     const params = new URLSearchParams();

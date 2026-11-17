@@ -18,7 +18,12 @@ $logDir  = __DIR__ . '/analytics-logs';
 $logFile = $logDir . '/events.csv';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    $event = (string)($_POST['event'] ?? '');
+    $post = $_POST;
+    if (empty($post)) {
+        // Fallback, falls der Content-Type nicht als Form-Post erkannt wird
+        parse_str((string)file_get_contents('php://input'), $post);
+    }
+    $event = (string)($post['event'] ?? '');
     if (!in_array($event, ['play_click', 'play_started'], true)) {
         http_response_code(400);
         exit('unknown event');
@@ -26,20 +31,22 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $row = [
         date('c'),                            // Server-Zeit
         $event,
-        (string)($_POST['action'] ?? ''),      // play | pause (bei play_click)
-        (string)($_POST['page'] ?? ''),        // Pfad der Seite
-        (string)($_POST['t'] ?? ''),           // Client-Zeit
+        (string)($post['action'] ?? ''),      // play | pause (bei play_click)
+        (string)($post['page'] ?? ''),        // Pfad der Seite
+        (string)($post['t'] ?? ''),           // Client-Zeit
     ];
     if (!is_dir($logDir)) {
         @mkdir($logDir, 0755, true);
     }
     $fh = @fopen($logFile, 'a');
-    if ($fh) {
-        flock($fh, LOCK_EX);
-        fputcsv($fh, $row);
-        flock($fh, LOCK_UN);
-        fclose($fh);
+    if (!$fh) {
+        http_response_code(500);
+        exit('analytics-logs not writable - chmod 777 analytics-logs');
     }
+    flock($fh, LOCK_EX);
+    fputcsv($fh, $row);
+    flock($fh, LOCK_UN);
+    fclose($fh);
     http_response_code(204);
     exit;
 }

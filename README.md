@@ -62,6 +62,13 @@ Der Player meldet Klicks per `navigator.sendBeacon` (POST) an `analytics.php` im
 - Anonym: keine Cookies, keine IP, keine personenbezogenen Daten — nur Zeitstempel, Event, Aktion, Seitenpfad
 - Optional in `analytics.php` oben `$STATS_KEY` setzen und die Statistik nur mit `analytics.php?stats=1&key=...` abrufen
 
+### Troubleshooting: „Noch keine Daten“
+
+- In der deployed `app.js` muss in `CONFIG` `analyticsEndpoint: 'analytics.php'` stehen (fehlt die Zeile, greift der Default `analytics.php`; `''` schaltet ab)
+- Einmal Play drücken, danach `analytics.php?stats=1` neu laden
+- `analytics-logs/` neben `analytics.php` muss beschreibbar sein (`chmod 777 analytics-logs`); sonst antwortet das Endpoint mit **500** (sichtbar im Network-Tab der Browser-DevTools)
+- Im Network-Tab prüfen, ob der POST auf `analytics.php` mit **204** durchgeht
+
 ## Hinweise
 
 - Auf iOS startet der Ton erst nach dem ersten Tippen (Play-Button) – das ist ein Browser-Schutz und wird automatisch gehandhabt.

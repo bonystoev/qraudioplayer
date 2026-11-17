@@ -1,0 +1,2 @@
+Dieses Verzeichnis nimmt die Analytics-Events auf (events.csv).
+Auf dem Webserver beschreibbar machen, z. B.: chmod 777 analytics-logs
