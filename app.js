@@ -154,12 +154,40 @@ stopBtn.addEventListener('click', () => {
   audio.currentTime = 0;
 });
 
+let playedMs = 0;
+let playStartedAt = null;
+
+function stopPlayTimer() {
+  if (playStartedAt !== null) {
+    playedMs += performance.now() - playStartedAt;
+    playStartedAt = null;
+  }
+}
+
+function flushListeningTime() {
+  stopPlayTimer();
+  if (playedMs <= 0) return;
+  trackEvent('listening_time', { duration_ms: String(Math.round(playedMs)) });
+  playedMs = 0;
+}
+
 audio.addEventListener('play', () => {
   setPlayingUI(true);
   trackEvent('play_started');
+  if (playStartedAt === null) playStartedAt = performance.now();
 });
-audio.addEventListener('pause', () => setPlayingUI(false));
-audio.addEventListener('ended', () => { audio.currentTime = 0; });
+audio.addEventListener('pause', () => {
+  setPlayingUI(false);
+  stopPlayTimer();
+});
+audio.addEventListener('ended', () => {
+  audio.currentTime = 0;
+  flushListeningTime();
+});
+window.addEventListener('pagehide', flushListeningTime);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushListeningTime();
+});
 audio.addEventListener('loadedmetadata', () => {
   durationEl.textContent = formatTime(audio.duration);
 });
