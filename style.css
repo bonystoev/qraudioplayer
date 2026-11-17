@@ -1,0 +1,206 @@
+:root {
+  --bg: #0b0d12;
+  --card: #141824;
+  --text: #f2f4f8;
+  --muted: #9aa3b2;
+  --accent: #6ea8fe;
+  --accent-strong: #4d8dff;
+  --track: #2a3040;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: radial-gradient(120% 120% at 50% 0%, #1a2030 0%, var(--bg) 60%);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: max(24px, env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+.player {
+  margin: auto;
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 24px 20px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 16px;
+  background: #000;
+}
+
+.title {
+  margin: 18px 0 4px;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.artist {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.waveform {
+  display: block;
+  width: 100%;
+  height: 64px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.time {
+  min-width: 36px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.time:first-child { text-align: right; }
+.time:last-child { text-align: left; }
+
+#seek { flex: 1; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 16px 0 4px;
+}
+
+.btn {
+  touch-action: manipulation;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--track);
+  color: var(--text);
+  transition: transform 0.08s ease, background 0.2s ease;
+}
+.btn:active { transform: scale(0.94); }
+
+.btn-play {
+  width: 72px;
+  height: 72px;
+  background: var(--accent-strong);
+  color: #fff;
+}
+.btn-play.is-playing { background: var(--accent); }
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--muted);
+}
+#volume { flex: 1; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent-strong) 0%, var(--accent-strong) var(--fill, 0%), var(--track) var(--fill, 0%));
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border: none;
+  border-radius: 50%;
+  background: var(--text);
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track);
+}
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-strong);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+/* Lautstärke-Slider dezenter: dünne graue Spur, kleiner Griff, gedimmtes Icon */
+#volume::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--muted) 0%, var(--muted) var(--fill, 0%), var(--track) var(--fill, 0%));
+}
+#volume::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  background: var(--muted);
+}
+#volume::-moz-range-track { height: 4px; }
+#volume::-moz-range-progress { height: 4px; background: var(--muted); }
+#volume::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.volume svg { opacity: 0.55; }
+
+.btn:focus-visible,
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-height: 720px) {
+  .player {
+    max-width: 320px;
+    padding: 18px 16px;
+  }
+  .waveform { height: 48px; }
+}
+
+.credits {
+  margin-top: 18px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.credits:empty { display: none; }
