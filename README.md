@@ -55,7 +55,7 @@ python3 -m http.server 8000
 
 Der Player meldet Klicks per `navigator.sendBeacon` (POST) an `analytics.php` im selben Ordner wie die Seite. Dort landen die Events in `analytics-logs/events.csv`.
 
-- Events: `play_click` (jeder Klick auf Play/Pause, mit `action=play|pause`), `play_started` (tatsächlicher Wiedergabestart) und `listening_time` (Hördauer in `duration_ms` — wird akkumuliert und beim Ende der Wiedergabe, Tab-Wechsel oder Schließen der Seite per `sendBeacon` geflusht)
+- Events: `play_click` (jeder Klick auf Play/Pause, mit `action=play|pause`), `play_started` (tatsächlicher Wiedergabestart) und `listening_time` (Hördauer in `duration_ms` — wird akkumuliert und alle 30 s während der Wiedergabe sowie beim Ende, Tab-Wechsel oder Schließen der Seite per `sendBeacon` geflusht; läuft die Wiedergabe im Hintergrund weiter, z. B. nach Bildschirm-Sperre, wird weitergezählt)
 - Auswertung im Browser öffnen: `analytics.php?stats=1` (gesamt, pro Event, Hördauer gesamt/Ø/pro Tag, Events pro Tag)
 - `analytics-logs/` muss für den Webserver beschreibbar sein (z. B. `chmod 777 analytics-logs`); wird sonst selbst angelegt, wenn möglich
 - Abschaltbar in `app.js` (`CONFIG.analyticsEndpoint: ''`); schlägt das Endpoint fehl, passiert still nichts — der Player funktioniert trotzdem

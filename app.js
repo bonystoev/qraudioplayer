@@ -164,8 +164,13 @@ function stopPlayTimer() {
   }
 }
 
-function flushListeningTime() {
-  stopPlayTimer();
+function flushListeningTime(keepTimerRunning) {
+  if (keepTimerRunning && playStartedAt !== null) {
+    playedMs += performance.now() - playStartedAt;
+    playStartedAt = performance.now();
+  } else {
+    stopPlayTimer();
+  }
   if (playedMs <= 0) return;
   trackEvent('listening_time', { duration_ms: String(Math.round(playedMs)) });
   playedMs = 0;
@@ -182,12 +187,15 @@ audio.addEventListener('pause', () => {
 });
 audio.addEventListener('ended', () => {
   audio.currentTime = 0;
-  flushListeningTime();
+  flushListeningTime(false);
 });
-window.addEventListener('pagehide', flushListeningTime);
+window.addEventListener('pagehide', () => flushListeningTime(true));
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') flushListeningTime();
+  if (document.visibilityState === 'hidden') flushListeningTime(true);
 });
+setInterval(() => {
+  if (!audio.paused && !audio.ended) flushListeningTime(true);
+}, 30000);
 audio.addEventListener('loadedmetadata', () => {
   durationEl.textContent = formatTime(audio.duration);
 });
